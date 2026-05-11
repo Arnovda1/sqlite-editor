@@ -18,6 +18,8 @@ class YourEditorProvider implements vscode.CustomReadonlyEditorProvider {
 	async resolveCustomEditor(document: vscode.CustomDocument, webviewPanel: vscode.WebviewPanel) {
 		webviewPanel.webview.options = { enableScripts: true };
 
+		const db = await setupDb(document);
+
 		const scriptUri = webviewPanel.webview.asWebviewUri(
 			vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'webview.js')
 		);
@@ -38,23 +40,16 @@ class YourEditorProvider implements vscode.CustomReadonlyEditorProvider {
 </html>`;
 
 		webviewPanel.webview.onDidReceiveMessage((msg) => {
-			if (msg.type === 'ready') {
-				webviewPanel.webview.postMessage({
-					type: 'load',
-					tables: ['users', 'posts'],
-					rows: [
-						{ id: 1, name: 'Alice' },
-						{ id: 2, name: 'Bob' },
-					]
-				});
+			if (msg.type === 'query') {
+				try {
+					const results = db.exec(msg.sql);
+					webviewPanel.webview.postMessage({ type: 'queryResult', id: msg.id, results });
+				} catch (err: any) {
+					webviewPanel.webview.postMessage({ type: 'queryResult', id: msg.id, error: err.message });
+				}
 			}
 		});
-
-		try {
-			const db = await setupDb(document);
-		} catch (err: any) {
-			vscode.window.showErrorMessage('Failed to open db: ' + err.message);
-		}
+		
 	}
 }
 
