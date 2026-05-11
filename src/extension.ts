@@ -18,11 +18,7 @@ class YourEditorProvider implements vscode.CustomReadonlyEditorProvider {
 		webviewPanel.webview.options = { enableScripts: true };
 
 		try {
-			await setupDb(document);
-			const fileUri = document.uri.fsPath;
-			const fileBytes = await fs.promises.readFile(fileUri);
-			const SQL = await initSqlJs();
-			const db = new SQL.Database(fileBytes);
+			const db = await setupDb(document);
 
 			const statement = db.prepare("SELECT * FROM user");
 
