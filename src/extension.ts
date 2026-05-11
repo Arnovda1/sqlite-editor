@@ -37,9 +37,21 @@ class YourEditorProvider implements vscode.CustomReadonlyEditorProvider {
 </body>
 </html>`;
 
+		webviewPanel.webview.onDidReceiveMessage((msg) => {
+			if (msg.type === 'ready') {
+				webviewPanel.webview.postMessage({
+					type: 'load',
+					tables: ['users', 'posts'],
+					rows: [
+						{ id: 1, name: 'Alice' },
+						{ id: 2, name: 'Bob' },
+					]
+				});
+			}
+		});
+
 		try {
 			const db = await setupDb(document);
-			// TODO: send db data to webview via postMessage
 		} catch (err: any) {
 			vscode.window.showErrorMessage('Failed to open db: ' + err.message);
 		}

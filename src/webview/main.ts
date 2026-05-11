@@ -1,4 +1,6 @@
 import { mount } from 'svelte';
-import app from './app.svelte';
+import App from './app.svelte';
+import { vscode } from './vscode';
 
-mount(app, { target: document.body });
+mount(App, { target: document.body });
+vscode.postMessage({ type: 'ready' });
