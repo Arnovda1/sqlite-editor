@@ -1,4 +1,6 @@
 const esbuild = require("esbuild");
+const fs = require("fs");
+const path = require("path");
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
@@ -42,6 +44,12 @@ async function main() {
 			esbuildProblemMatcherPlugin,
 		],
 	});
+	// Copy sql.js wasm file to dist
+	const wasmSrc = path.join(__dirname, 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm');
+	const wasmDest = path.join(__dirname, 'dist', 'sql-wasm.wasm');
+	fs.mkdirSync(path.join(__dirname, 'dist'), { recursive: true });
+	fs.copyFileSync(wasmSrc, wasmDest);
+
 	if (watch) {
 		await ctx.watch();
 	} else {
