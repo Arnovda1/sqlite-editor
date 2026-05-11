@@ -1,7 +1,8 @@
 <script lang="ts">
   import { vscode } from './vscode';
-  import { Test } from './components/test.svelte';
+  import Tabs from './components/tabs.svelte';
 
+  let currentTab = $state<'overview' | 'query' | 'tables'>('overview');
   let pendingQueries = new Map<number, (result: any) => void>();
   let queryId = 0;
 
@@ -60,7 +61,9 @@
 </script>
 
 <main class="p-4 font-mono text-sm">
-  <h1 class="text-base font-bold mb-4">SQLite Editor <Test /></h1>
+  <h1 class="text-base font-bold mb-4">SQLite Editor</h1>
+
+  <Tabs bind:currentTab={currentTab} />
 
   {#if loading}
     <p class="text-gray-500">Loading...</p>
