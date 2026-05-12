@@ -1,8 +1,12 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import type { QueryResult } from '../../types';
   import Button from './button.svelte';
   import Error from './error.svelte';
   import ResultTable from './result-table.svelte';
+  import { EditorView, basicSetup } from 'codemirror';
+  import { sql } from '@codemirror/lang-sql';
+  import { oneDark } from '@codemirror/theme-one-dark';
 
   let {
     query,
@@ -14,21 +18,42 @@
   let result = $state<QueryResult | undefined>(undefined);
   let error = $state<string | undefined>(undefined);
 
+  let editorEl: HTMLDivElement;
+  let view: EditorView;
+
+  $effect(() => {
+    view = new EditorView({
+      doc: untrack(() => statement),
+      extensions: [
+        basicSetup,
+        sql(),
+        oneDark,
+        EditorView.theme({
+          '.cm-scroller': { minHeight: '16rem' },
+        }),
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            statement = update.state.doc.toString();
+          }
+        }),
+      ],
+      parent: editorEl,
+    });
+
+    return () => view.destroy();
+  });
+
   const handleQuery = async () => {
+    error = undefined;
     try {
       result = await query(statement);
     } catch (err: any) {
       error = typeof err === 'string' ? err : err.message;
     }
   }
-
 </script>
 
-<textarea
-  class="w-full min-h-64 rounded-lg p-3 mb-1.5 bg-gray-300 dark:bg-gray-600"
-  placeholder="SELECT * FROM user"
-  bind:value={statement}
-></textarea>
+<div bind:this={editorEl} class="mb-1.5 rounded-lg overflow-hidden text-sm"></div>
 
 <Error {error} />
 

@@ -31,7 +31,7 @@ class YourEditorProvider implements vscode.CustomReadonlyEditorProvider {
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src ${webviewPanel.webview.cspSource}; style-src ${webviewPanel.webview.cspSource};">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src ${webviewPanel.webview.cspSource}; style-src ${webviewPanel.webview.cspSource} 'unsafe-inline';">
 	<link rel="stylesheet" href="${styleUri}">
 </head>
 <body>
