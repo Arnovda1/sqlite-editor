@@ -28,7 +28,7 @@ No additional setup required. The extension bundles [sql.js](https://sql-wasm.or
 ## Known Issues
 
 - Supports `.db`, `.sqlite`, and `.sqlite3` files
-- The database is opened read-only, write queries (INSERT, UPDATE, DELETE) are not yet supported
+- The database is opened read-only, write queries (INSERT, UPDATE, DELETE) are not fully supported, there is some inline editing
 
 ## Release Notes
 
