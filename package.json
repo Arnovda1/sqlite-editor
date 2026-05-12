@@ -2,6 +2,7 @@
   "name": "sqlite-editor",
   "displayName": "sqlite-editor",
   "description": "Sqlite editor",
+  "publisher": "arnovda1",
   "version": "0.0.1",
   "repository": {
     "type": "git",
