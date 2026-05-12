@@ -65,14 +65,17 @@
 </script>
 
 <main class="p-4 font-mono text-sm">
-  <h1 class="text-base font-bold mb-4">SQLite Editor</h1>
+  
+  <h1 class="text-base font-bold mb-4">
+    SQLite Editor
+  </h1>
 
   <Tabs bind:currentTab={currentTab} />
 
   {#if currentTab === 'overview'}
     <Overview />
   {:else if currentTab === 'query'}
-    <Query />
+    <Query {query} />
   {:else if currentTab === 'tables'}
     <Tables />
   {:else}
@@ -83,35 +86,35 @@
     <p class="text-gray-500">Loading...</p>
   {:else}
     <!-- Table list -->
-    <div class="flex gap-2 flex-wrap mb-4">
+    <!-- <div class="flex gap-2 flex-wrap mb-4">
       {#each tables as t}
         <button
           class="px-2 py-1 border rounded {activeTable === t ? 'bg-blue-600 text-white' : ''}"
           onclick={() => selectTable(t)}
         >{t}</button>
       {/each}
-    </div>
+    </div> -->
 
     <!-- Table data -->
-    {#if tableResult}
+    <!-- {#if tableResult}
       {#if 'error' in tableResult}
         <p class="text-red-500">{tableResult.error}</p>
       {:else}
         {@render ResultTable(tableResult.columns, tableResult.rows)}
       {/if}
-    {/if}
+    {/if} -->
 
     <!-- Ad-hoc query -->
-    <div class="mt-6">
+    <!-- <div class="mt-6">
       <textarea
         class="w-full border p-2 rounded h-20 resize-y"
         placeholder="SELECT * FROM ..."
         bind:value={sql}
       ></textarea>
       <button class="mt-1 px-3 py-1 bg-green-600 text-white rounded" onclick={runQuery}>Run</button>
-    </div>
+    </div> -->
 
-    {#if customResult}
+    <!-- {#if customResult}
       <div class="mt-4">
         {#if 'error' in customResult}
           <p class="text-red-500">{customResult.error}</p>
@@ -119,12 +122,12 @@
           {@render ResultTable(customResult.columns, customResult.rows)}
         {/if}
       </div>
-    {/if}
+    {/if} -->
   {/if}
 </main>
 
 <!-- inline component -->
-{#snippet ResultTable(columns: string[], rows: any[][])}
+<!-- {#snippet ResultTable(columns: string[], rows: any[][])}
   {#if columns.length === 0}
     <p class="text-gray-500">No results.</p>
   {:else}
@@ -149,4 +152,4 @@
       </table>
     </div>
   {/if}
-{/snippet}
+{/snippet} -->
