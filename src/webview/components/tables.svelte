@@ -35,10 +35,16 @@
 
   const handleQueryTable = async (table: string) => {
     error = undefined;
+    result = undefined;
     loading = true;
     selectedTable = table;
     try {
-      result = await query(`SELECT * FROM ${table}`);
+      const res = await query(`SELECT * FROM "${table}"`);
+      if (res && 'error' in res) {
+        error = res.error;
+      } else {
+        result = res;
+      }
     } catch (err: any) {
       error = typeof err === 'string' ? err : err.message;
     } finally {

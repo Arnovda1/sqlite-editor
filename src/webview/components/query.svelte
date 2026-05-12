@@ -63,10 +63,17 @@
   });
 
   const handleQuery = async () => {
+    if (!statement.trim()) return;
     error = undefined;
+    result = undefined;
     loading = true;
     try {
-      result = await query(statement);
+      const res = await query(statement);
+      if (res && 'error' in res) {
+        error = res.error;
+      } else {
+        result = res;
+      }
     } catch (err: any) {
       error = typeof err === 'string' ? err : err.message;
     } finally {
