@@ -46,8 +46,8 @@
           </tr>
 
           {#if selectedIndex === i}
-            <tr class="border rounded-lg m-0.5 border-t-gray-500/70">
-              <td colspan={data.columns.length} class="px-3 py-2">
+            <tr>
+              <td colspan={data.columns.length} class="px-3 py-2 ring-1 ring-gray-400/60 dark:ring-gray-500/60 rounded-lg">
                 <div class="flex flex-col">
                   {#each data.columns as column, j}
                     <div class="flex gap-4 py-1.5 {j > 0 ? 'border-t border-gray-400/60 dark:border-gray-500/60' : ''}">
