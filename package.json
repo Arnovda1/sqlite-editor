@@ -1,7 +1,7 @@
 {
-  "name": "sqlite-editor",
-  "displayName": "sqlite-editor",
-  "description": "Sqlite editor",
+  "name": "simple-sqlite",
+  "displayName": "simple-sqlite",
+  "description": "Simple SQLite",
   "publisher": "arnovda1",
   "version": "0.0.1",
   "repository": {
