@@ -20,6 +20,7 @@
   let error = $state<string | undefined>(undefined);
 
   let editorEl: HTMLDivElement;
+  let view: EditorView;
 
   const themeCompartment = new Compartment();
 
@@ -29,7 +30,7 @@
   }
 
   $effect(() => {
-    const view = new EditorView({
+    view = new EditorView({
       doc: untrack(() => statement),
       extensions: [
         basicSetup,
@@ -70,7 +71,9 @@
   }
 </script>
 
-<div bind:this={editorEl} class="mb-1.5 rounded-lg overflow-hidden text-sm"></div>
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div bind:this={editorEl} class="mb-1.5 rounded-lg overflow-hidden text-sm cursor-text" onclick={() => view?.focus()}></div>
 
 <Error {error} />
 
