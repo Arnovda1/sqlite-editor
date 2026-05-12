@@ -1,7 +1,7 @@
 {
-  "name": "simple-sqlite",
-  "displayName": "Simple SQLite",
-  "description": "Simple SQLite",
+  "name": "sqlite-workbench",
+  "displayName": "SQLite Workbench",
+  "description": "View and edit sqlite files effortlessly",
   "publisher": "arnovda1",
   "version": "0.0.1",
   "icon": "media/logo.png",
