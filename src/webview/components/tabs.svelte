@@ -7,7 +7,7 @@
     currentTab: AppTabs,
   } = $props()
 
-  const tabs = ['overview', 'query', 'tables'];
+  const tabs = ['query', 'overview', 'tables'];
 
 </script>
 

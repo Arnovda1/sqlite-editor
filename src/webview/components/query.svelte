@@ -13,18 +13,17 @@
   const handleQuery = async () => {
     try {
       const result = await query(statement);
+      if (!result) throw new TypeError('Failed to query db');
       
-      console.log(result.columns, result.rows)
-
     } catch (err: any) {
-      error = err;
+      error = typeof err === 'string' ? err : err.message;
     }
   }
 
 </script>
 
 <textarea
-  class="border w-full min-h-64 rounded-lg p-3 mb-1.5 bg-gray-300 dark:bg-gray-600"
+  class="w-full min-h-64 rounded-lg p-3 mb-1.5 bg-gray-300 dark:bg-gray-600"
   placeholder="SELECT * FROM user"
   bind:value={statement}
 ></textarea>
