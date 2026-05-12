@@ -8,11 +8,11 @@
     currentTab: AppTabs,
   } = $props()
 
-  const tabs = ['query', 'overview', 'tables'];
+  const tabs = ['query', 'tables'];
 
 </script>
 
-<nav class="w-full gap-1 grid grid-cols-3 p-0.75 rounded-xl bg-gray-300 dark:bg-gray-600 my-3">
+<nav class="w-full gap-1 grid grid-cols-2 p-0.75 rounded-xl bg-gray-300 dark:bg-gray-600 my-3">
   {#each tabs as tab}
     <button
       onclick={() => currentTab = tab as AppTabs}

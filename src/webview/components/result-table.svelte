@@ -19,12 +19,22 @@
   let page = $state(0);
   let sortCol = $state<number | undefined>(undefined);
   let sortDir = $state<'asc' | 'desc'>('asc');
+  let filters = $state<string[]>([]);
 
+  let columns = $derived(data && !('error' in data) ? data.columns : []);
   let rows = $derived(data && !('error' in data) ? data.rows : []);
 
+  let filteredRows = $derived.by(() => {
+    const active = filters.map((f, i) => ({ i, f: f.trim().toLowerCase() })).filter(x => x.f);
+    if (!active.length) return rows;
+    return rows.filter(row =>
+      active.every(({ i, f }) => String(row[i] ?? '').toLowerCase().includes(f))
+    );
+  });
+
   let sortedRows = $derived.by(() => {
-    if (sortCol === undefined) return rows;
-    return [...rows].sort((a, b) => {
+    if (sortCol === undefined) return filteredRows;
+    return [...filteredRows].sort((a, b) => {
       const av = a[sortCol!], bv = b[sortCol!];
       if (av === bv) return 0;
       if (av === null) return 1;
@@ -54,6 +64,7 @@
     selectedIndex = undefined;
     sortCol = undefined;
     sortDir = 'asc';
+    filters = [];
   });
 </script>
 
@@ -69,7 +80,9 @@
 
   <div class="flex items-baseline justify-between mt-4">
     <p class="font-bold text-lg">{title}</p>
-    <span class="text-xs text-gray-500 dark:text-gray-400">{rows.length} rows</span>
+    <span class="text-xs text-gray-500 dark:text-gray-400">
+      {sortedRows.length !== rows.length ? `${sortedRows.length} / ` : ''}{rows.length} rows
+    </span>
   </div>
 
   <ResultTablePagination
@@ -82,17 +95,17 @@
     <table class="w-full">
       <thead>
         <tr>
-          {#each data.columns as column, i}
+          {#each columns as column, i}
             <th
               scope="col"
-              class="min-w-32 max-w-96 px-3 py-1.5 rounded-t-lg cursor-pointer select-none hover:bg-gray-400/40 dark:hover:bg-gray-500/40 {sortCol === i ? 'bg-gray-400/40 dark:bg-gray-500/40' : ''}"
+              class="min-w-32 max-w-96 px-3 py-1.5 rounded-lg cursor-pointer select-none hover:bg-gray-400/40 dark:hover:bg-gray-500/40 {sortCol === i ? 'bg-gray-400/40 dark:bg-gray-500/40' : ''}"
               onclick={() => handleSort(i)}
             >
               <div class="flex items-center gap-1 overflow-hidden">
                 <span class="shrink-0 opacity-50">
                   {#if sortCol === i}
                     {#if sortDir === 'asc'}
-                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
                     {:else}
                       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
                     {/if}
@@ -101,6 +114,20 @@
                 <span class="truncate">{pascalToSentence(column)}</span>
               </div>
             </th>
+          {/each}
+        </tr>
+        <tr>
+          {#each columns as _, i}
+            <td class="px-2 py-1">
+              <input
+                type="text"
+                placeholder="Filter..."
+                bind:value={filters[i]}
+                oninput={() => { page = 0; selectedIndex = undefined; }}
+                onclick={(e) => e.stopPropagation()}
+                class="w-full min-w-0 rounded px-2 py-0.5 text-xs bg-gray-200 dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-1 ring-gray-400 dark:ring-gray-500"
+              />
+            </td>
           {/each}
         </tr>
       </thead>
@@ -120,9 +147,9 @@
 
           {#if selectedIndex === i}
             <tr>
-              <td colspan={data.columns.length} class="px-3 py-1.5 ring-2 ring-gray-400/60 dark:ring-gray-500/60 rounded-lg bg-gray-200 dark:bg-gray-700">
+              <td colspan={columns.length} class="px-3 py-1.5 ring-2 ring-gray-400/60 dark:ring-gray-500/60 rounded-lg bg-gray-200 dark:bg-gray-700">
                 <div class="flex flex-col">
-                  {#each data.columns as column, j}
+                  {#each columns as column, j}
                     <div class="flex gap-4 py-1.5 {j > 0 ? 'border-t border-gray-400/60 dark:border-gray-500/60' : ''}">
                       <span class="shrink-0 w-40 text-sm font-semibold truncate pt-0.5">
                         {column}
@@ -140,7 +167,7 @@
           {/if}
         {:else}
           <tr>
-            <td colspan={data.columns.length} class="px-3 py-4 text-center text-gray-500 dark:text-gray-400 italic">
+            <td colspan={columns.length} class="px-3 py-4 text-center text-gray-500 dark:text-gray-400 italic">
               No results found
             </td>
           </tr>
