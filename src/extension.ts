@@ -4,7 +4,7 @@ import setupDb from './setup-db';
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.window.registerCustomEditorProvider(
-			'sqlite-editor.dbEditor',
+			'sqlite-workbench.dbEditor',
 			new YourEditorProvider(context),
 		)
 	);
