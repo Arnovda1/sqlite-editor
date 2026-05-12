@@ -13,5 +13,6 @@ A VS Code extension for viewing and querying SQLite databases.
 
 ## Images
 
-![Tables Preview](media/screen_tables.png)
 ![Query Preview](media/screen_query.png)
+![Overview Preview](media/screen_overview.png)
+![Tables Preview](media/screen_tables.png)
