@@ -107,7 +107,7 @@
           {#each columns as column, i}
             <th
               scope="col"
-              class="min-w-32 max-w-96 px-3 py-1.5 rounded-lg cursor-pointer select-none hover:bg-gray-400/40 dark:hover:bg-gray-500/40 {sortCol === i ? 'bg-gray-400/40 dark:bg-gray-500/40' : ''}"
+              class="min-w-40 max-w-96 px-3 py-1.5 rounded-lg cursor-pointer select-none hover:bg-gray-400/40 dark:hover:bg-gray-500/40 {sortCol === i ? 'bg-gray-400/40 dark:bg-gray-500/40' : ''}"
               onclick={() => handleSort(i)}
             >
               <div class="flex items-center gap-1 overflow-hidden">
@@ -160,7 +160,7 @@
               onclick={() => selectedIndex = selectedIndex === i ? undefined : i}
             >
               {#each record as cell}
-                <td class="min-w-32 max-w-96 overflow-hidden truncate px-3 py-1.5">
+                <td class="min-w-40 max-w-96 overflow-hidden truncate px-3 py-1.5">
                   {cell}
                 </td>
               {/each}
