@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { AppTabs } from '../../types';
+  import { capitalize } from '../../util';
 
   let {
     currentTab = $bindable(),
@@ -23,7 +24,7 @@
         text-center px-0.5 py-0.75 rounded-lg select-none
       "
     >
-      {tab}
+      {capitalize(tab)}
     </button>
   {/each}
 </nav>

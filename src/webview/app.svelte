@@ -6,7 +6,7 @@
   import Overview from './components/overview.svelte';
   import type { AppTabs, QueryResult } from '../types';
 
-  let currentTab = $state<AppTabs>('query');
+  let currentTab = $state<AppTabs>('tables');
   let pendingQueries = new Map<number, (result: any) => void>();
   let queryId = 0;
 
