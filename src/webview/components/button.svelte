@@ -2,12 +2,12 @@
   import { Snippet } from "svelte";
 
   let {
-    class: className,
-    onClick: onclick,
+    class: className = '',
+    onclick: onClick,
     children,
   }: {
-    class: string,
-    onClick: () => void,
+    class?: string,
+    onclick: () => void,
     children: Snippet,
   } = $props();
 
@@ -16,7 +16,7 @@
 <!-- svelte-ignore a11y_consider_explicit_label -->
 <button
   class="py-1.5 px-2.5 mt-1.5 mx-auto rounded-lg bg-gray-100 dark:bg-gray-900 text-dark dark:text-white {className}"
-  {onclick}
+  onclick={onClick}
 >
   {@render children()}
 </button>

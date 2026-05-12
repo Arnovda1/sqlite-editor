@@ -4,13 +4,13 @@
   import Tables from './components/tables.svelte';
   import Query from './components/query.svelte';
   import Overview from './components/overview.svelte';
-  import type { AppTabs } from '../types';
+  import type { AppTabs, QueryResult } from '../types';
 
   let currentTab = $state<AppTabs>('overview');
   let pendingQueries = new Map<number, (result: any) => void>();
   let queryId = 0;
 
-  const query = async (sql: string): Promise<{ columns: string[]; rows: any[][] } | null> => {
+  const query = async (sql: string): Promise<QueryResult | null> => {
     return new Promise((resolve) => {
       const id = queryId++;
       pendingQueries.set(id, resolve);
@@ -32,9 +32,6 @@
       }
     }
   });
-
-  // --- state ---
-  type QueryResult = { columns: string[]; rows: any[][] } | { error: string; columns: []; rows: [] };
 
   let tables: string[] = $state([]);
   let activeTable: string | null = $state(null);
