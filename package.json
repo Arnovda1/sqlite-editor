@@ -17,9 +17,9 @@
         "viewType": "sqlite-editor.dbEditor",
         "displayName": "SQLite editor",
         "selector": [
-          {
-            "filenamePattern": "*.db"
-          }
+          { "filenamePattern": "*.db" },
+          { "filenamePattern": "*.sqlite" },
+          { "filenamePattern": "*.sqlite3" }
         ],
         "priority": "default"
       }
