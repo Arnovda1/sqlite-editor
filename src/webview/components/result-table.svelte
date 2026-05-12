@@ -2,15 +2,20 @@
   import type { QueryResult } from "../../types";
   import { pascalToSentence } from "../../util";
   import ResultTablePagination from "./result-table-pagination.svelte";
+  import RecordDetail from "./record-detail.svelte";
 
   let {
     title,
     data,
     loading = false,
+    tableName,
+    query,
   }: {
     title: string,
     data?: QueryResult,
     loading?: boolean,
+    tableName?: string,
+    query?: (sql: string) => Promise<QueryResult>,
   } = $props();
 
   const PAGE_SIZE = 1000;
@@ -149,24 +154,13 @@
           </tr>
 
           {#if selectedIndex === i}
-            <tr>
-              <td colspan={columns.length} class="px-3 py-1.5 ring-2 ring-gray-400/60 dark:ring-gray-500/60 rounded-lg bg-gray-200 dark:bg-gray-700">
-                <div class="flex flex-col">
-                  {#each columns as column, j}
-                    <div class="flex gap-4 py-1.5 {j > 0 ? 'border-t border-gray-400/60 dark:border-gray-500/60' : ''}">
-                      <span class="shrink-0 w-40 text-sm font-semibold truncate pt-0.5">
-                        {column}
-                      </span>
-                      {#if record[j] == null}
-                        <span class="italic text-gray-400">null</span>
-                      {:else}
-                        <span class="break-all">{record[j]}</span>
-                      {/if}
-                    </div>
-                  {/each}
-                </div>
-              </td>
-            </tr>
+            <RecordDetail
+              {record}
+              {columns}
+              {tableName}
+              {query}
+              onclose={() => selectedIndex = undefined}
+            />
           {/if}
         {:else}
           <tr>

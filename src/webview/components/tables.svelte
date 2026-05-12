@@ -68,5 +68,5 @@
 <Error {error} />
 
 {#if result || loading}
-  <ResultTable data={result} title='Table {selectedTable}' {loading} />
+  <ResultTable data={result} title='Table {selectedTable}' {loading} tableName={selectedTable} {query} />
 {/if}
