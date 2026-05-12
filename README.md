@@ -19,9 +19,3 @@ A VS Code extension for viewing and querying SQLite databases.
 
 - Supports `.db`, `.sqlite`, and `.sqlite3` files
 - The database is opened read-only, write queries (INSERT, UPDATE, DELETE) are not fully supported, there is some inline editing
-
-## Release Notes
-
-### 0.0.1
-
-Initial release.
