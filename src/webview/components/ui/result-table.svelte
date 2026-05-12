@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { QueryResult } from "../../../types";
-    import Button from "./button.svelte";
+  import Button from "./button.svelte";
   import EditableCell from "./editable-cell.svelte";
-    import Error from "./error.svelte";
+  import Error from "./error.svelte";
+  import NewRecordRow from "./new-record-row.svelte";
   import ResultTablePagination from "./result-table-pagination.svelte";
 
   let {
@@ -28,6 +29,7 @@
   let sortDir = $state<'asc' | 'desc'>('asc');
   let filters = $state<string[]>([]);
   let saveError = $state<string | undefined>(undefined);
+  let addingRecord = $state(false);
 
   let columns = $derived(data && !('error' in data) ? data.columns : []);
   let rows = $derived(data && !('error' in data) ? data.rows : []);
@@ -108,13 +110,15 @@
       <span class="text-xs text-gray-500 dark:text-gray-400">
         {sortedRows.length !== rows.length ? `${sortedRows.length} / ` : ''}{rows.length} rows
       </span>
+      {#if tableName}
+        <Button onclick={() => { addingRecord = true; }} size='icon'>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        </Button>
+      {/if}
       {#if onRefresh}
         <Button onclick={onRefresh} size='icon'>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-refresh-cw-icon lucide-refresh-cw"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
         </Button>
-        <!-- <button onclick={onRefresh} class="p-1 rounded hover:bg-gray-400/40 dark:hover:bg-gray-500/40 text-gray-500 dark:text-gray-400" title="Refresh">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-        </button> -->
       {/if}
     </div>
   </div>
@@ -170,6 +174,14 @@
       </thead>
 
       <tbody>
+        {#if addingRecord}
+          <NewRecordRow
+            {columns}
+            tableName={tableName!}
+            onSave={() => { addingRecord = false; onRefresh?.(); }}
+            onCancel={() => { addingRecord = false; }}
+          />
+        {/if}
         {#each pageRows as record, i}
           {@const isSelectedRow = selectedRecord === i}
           <tr
