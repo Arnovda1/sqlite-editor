@@ -15,22 +15,7 @@ A VS Code extension for viewing and querying SQLite databases.
 ![Tables Preview](media/screen_tables.png)
 ![Query Preview](media/screen_query.png)
 
-## Usage
-
-Open any `.db` file in VS Code — the extension will activate automatically as the default editor for `.db` files.
-
-Use the three tabs to navigate:
-
-| Tab | Description |
-|-----|-------------|
-| **Query** | Write and run arbitrary SQL against the open database |
-| **Tables** | Browse tables and views, click to load their contents |
-
-## Requirements
-
-No additional setup required. The extension bundles [sql.js](https://sql-wasm.org) for in-process SQLite execution — no native binaries needed.
-
-## Known Issues
+## Limits
 
 - Supports `.db`, `.sqlite`, and `.sqlite3` files
 - The database is opened read-only, write queries (INSERT, UPDATE, DELETE) are not fully supported, there is some inline editing
