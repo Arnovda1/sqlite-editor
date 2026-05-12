@@ -36,10 +36,6 @@
   QUERY
 </Button>
 
-<!-- <button class="py-1.5 px-2.5 mt-1.5 mx-auto rounded-lg bg-gray-100 dark:bg-gray-900 text-dark dark:text-white" onclick={handleQuery}>
-  QUERY
-</button> -->
-
 {#if result}
-  <ResultTable data={result} />
+  <ResultTable data={result} class='mt-4' />
 {/if}
