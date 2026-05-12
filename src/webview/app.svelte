@@ -1,12 +1,16 @@
 <script lang="ts">
   import { vscode } from './vscode';
   import Tabs from './components/tabs.svelte';
+  import Tables from './components/tables.svelte';
+  import Query from './components/query.svelte';
+  import Overview from './components/overview.svelte';
+  import type { AppTabs } from '../../types';
 
-  let currentTab = $state<'overview' | 'query' | 'tables'>('overview');
+  let currentTab = $state<AppTabs>('overview');
   let pendingQueries = new Map<number, (result: any) => void>();
   let queryId = 0;
 
-  function query(sql: string): Promise<{ columns: string[]; rows: any[][] } | null> {
+  const query = async (sql: string): Promise<{ columns: string[]; rows: any[][] } | null> => {
     return new Promise((resolve) => {
       const id = queryId++;
       pendingQueries.set(id, resolve);
@@ -64,6 +68,16 @@
   <h1 class="text-base font-bold mb-4">SQLite Editor</h1>
 
   <Tabs bind:currentTab={currentTab} />
+
+  {#if currentTab === 'overview'}
+    <Overview />
+  {:else if currentTab === 'query'}
+    <Query />
+  {:else if currentTab === 'tables'}
+    <Tables />
+  {:else}
+    <p>Select a tab</p>
+  {/if}
 
   {#if loading}
     <p class="text-gray-500">Loading...</p>

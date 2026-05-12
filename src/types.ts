@@ -1,0 +1,1 @@
+export type AppTabs = 'overview' | 'query' | 'tables';
