@@ -3,6 +3,10 @@
   "displayName": "sqlite-editor",
   "description": "Sqlite editor",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Arnovda1/sqlite-editor"
+  },
   "engines": {
     "vscode": "^1.118.0"
   },
