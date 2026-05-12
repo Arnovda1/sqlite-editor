@@ -15,15 +15,20 @@
 
   let {
     initialSql = 'SELECT * FROM user',
+    initialResult,
     onSqlChange,
+    onResultChange,
   }: {
     initialSql?: string,
+    initialResult?: QueryResult,
     onSqlChange?: (sql: string) => void,
+    onResultChange?: (result: QueryResult | undefined) => void,
   } = $props();
 
   let schema = $state<Record<string, string[]> | undefined>(undefined);
   let statement = $state(initialSql);
-  let result = $state<QueryResult | undefined>(undefined);
+  // svelte-ignore state_referenced_locally
+  let result = $state<QueryResult | undefined>(initialResult);
   let error = $state<string | undefined>(undefined);
   let loading = $state(false);
 
@@ -118,6 +123,7 @@
         error = res.error;
       } else {
         result = res;
+        onResultChange?.(res);
       }
     } catch (err: any) {
       error = typeof err === 'string' ? err : err.message;

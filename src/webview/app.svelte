@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from 'svelte';
   import Tabs from './components/ui/tabs.svelte';
   import Query from './components/tabs/query.svelte';
   import type { AppTabs } from '../types';
@@ -13,9 +14,24 @@
   let currentTab = $state<AppTabs>(saved.tab ?? 'overview');
   let selectedTable = $state<string | undefined>(saved.table ?? undefined);
   let savedSql = $state<string>(saved.sql ?? '');
+  let savedResult = $state(saved.result ?? undefined);
 
   $effect(() => {
-    vscode.setState({ tab: currentTab, table: selectedTable, sql: savedSql });
+    vscode.setState({ tab: currentTab, table: selectedTable, sql: savedSql, result: savedResult });
+  });
+
+  const scrollPositions: Partial<Record<AppTabs, number>> = {};
+
+  $effect(() => {
+    const tab = currentTab;
+    return () => {
+      scrollPositions[tab] = window.scrollY;
+    };
+  });
+
+  $effect(() => {
+    const pos = scrollPositions[currentTab] ?? 0;
+    tick().then(() => window.scrollTo({ top: pos, behavior: 'instant' }));
   });
 
   window.addEventListener('message', (event) => {
@@ -42,16 +58,23 @@
 
   <Tabs bind:currentTab={currentTab} />
 
-  {#if currentTab !== 'query'}
+  <div class={currentTab === 'query' ? 'hidden' : ''}>
     <TableSelector bind:selectedTable={selectedTable} />
-  {/if}
+  </div>
 
-  {#if currentTab === 'query'}
-    <Query initialSql={savedSql} onSqlChange={(sql) => savedSql = sql} />
-  {:else if currentTab === 'overview'}
+  <div class={currentTab !== 'query' ? 'hidden' : ''}>
+    <Query
+      initialSql={savedSql}
+      initialResult={savedResult}
+      onSqlChange={(sql) => savedSql = sql}
+      onResultChange={(r) => savedResult = r}
+    />
+  </div>
+  <div class={currentTab !== 'overview' ? 'hidden' : ''}>
     <Overview {selectedTable} />
-  {:else if currentTab === 'tables'}
+  </div>
+  <div class={currentTab !== 'tables' ? 'hidden' : ''}>
     <Tables {selectedTable} />
-  {/if}
+  </div>
 
 </main>
