@@ -45,9 +45,10 @@
 
 {#if result || loading}
   <ResultTable
-    {loading} {query}
+    {loading}
     data={result}
     title='Table {selectedTable}'
     tableName={selectedTable}
+    onRefresh={() => selectedTable && handleQueryTable(selectedTable)}
   />
 {/if}

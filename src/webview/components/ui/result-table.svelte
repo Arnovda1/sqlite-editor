@@ -1,30 +1,33 @@
 <script lang="ts">
   import type { QueryResult } from "../../../types";
-  import { pascalToSentence } from "../../../util";
+    import Button from "./button.svelte";
+  import EditableCell from "./editable-cell.svelte";
+    import Error from "./error.svelte";
   import ResultTablePagination from "./result-table-pagination.svelte";
-  import RecordDetail from "./record-detail.svelte";
 
   let {
     title,
     data,
     loading = false,
     tableName,
-    query,
+    onRefresh,
   }: {
     title: string,
     data?: QueryResult,
     loading?: boolean,
     tableName?: string,
-    query?: (sql: string) => Promise<QueryResult>,
+    onRefresh?: () => void,
   } = $props();
 
   const PAGE_SIZE = 1000;
 
-  let selectedIndex = $state<number | undefined>(undefined);
+  let selectedCell = $state<number | undefined>(undefined);
+  let selectedRecord = $state<number | undefined>(undefined);
   let page = $state(0);
   let sortCol = $state<number | undefined>(undefined);
   let sortDir = $state<'asc' | 'desc'>('asc');
   let filters = $state<string[]>([]);
+  let saveError = $state<string | undefined>(undefined);
 
   let columns = $derived(data && !('error' in data) ? data.columns : []);
   let rows = $derived(data && !('error' in data) ? data.rows : []);
@@ -60,21 +63,33 @@
       sortDir = 'asc';
     }
     page = 0;
-    selectedIndex = undefined;
+    selectedRecord = undefined;
   }
 
   $effect(() => {
     rows;
     page = 0;
-    selectedIndex = undefined;
+    selectedRecord = undefined;
     sortCol = undefined;
     sortDir = 'asc';
     filters = [];
   });
+
+  $effect(() => {
+    selectedCell;
+    saveError = undefined;
+  });
 </script>
 
 {#if loading}
-  <p class="font-bold text-lg mt-4">{title}</p>
+  <div class="flex items-center justify-between mt-4">
+    <p class="font-bold text-lg">{title}</p>
+    {#if onRefresh}
+      <button onclick={onRefresh} class="p-1 rounded hover:bg-gray-400/40 dark:hover:bg-gray-500/40 text-gray-500 dark:text-gray-400" title="Refresh">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+      </button>
+    {/if}
+  </div>
 
   <!-- reserved space for pagination -->
   <div class="h-8"></div>
@@ -87,17 +102,27 @@
   </div>
 {:else if data?.columns && data.rows}
 
-  <div class="flex items-baseline justify-between mt-4">
+  <div class="flex items-center justify-between mt-4">
     <p class="font-bold text-lg">{title}</p>
-    <span class="text-xs text-gray-500 dark:text-gray-400">
-      {sortedRows.length !== rows.length ? `${sortedRows.length} / ` : ''}{rows.length} rows
-    </span>
+    <div class="flex items-center gap-3">
+      <span class="text-xs text-gray-500 dark:text-gray-400">
+        {sortedRows.length !== rows.length ? `${sortedRows.length} / ` : ''}{rows.length} rows
+      </span>
+      {#if onRefresh}
+        <Button onclick={onRefresh} size='icon'>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-refresh-cw-icon lucide-refresh-cw"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+        </Button>
+        <!-- <button onclick={onRefresh} class="p-1 rounded hover:bg-gray-400/40 dark:hover:bg-gray-500/40 text-gray-500 dark:text-gray-400" title="Refresh">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+        </button> -->
+      {/if}
+    </div>
   </div>
 
   <ResultTablePagination
     {pageCount}
     bind:page={page}
-    bind:selectedIndex={selectedIndex}
+    bind:selectedIndex={selectedRecord}
   />
 
   <div class="overflow-x-auto mt-1.5 rounded-lg p-3 bg-gray-100 dark:bg-gray-600">
@@ -120,7 +145,7 @@
                     {/if}
                   {/if}
                 </span>
-                <span class="truncate">{pascalToSentence(column)}</span>
+                <span class="truncate">{column}</span>
               </div>
             </th>
           {/each}
@@ -134,7 +159,7 @@
                   type="text"
                   placeholder="Filter"
                   bind:value={filters[i]}
-                  oninput={() => { page = 0; selectedIndex = undefined; }}
+                  oninput={() => { page = 0; selectedRecord = undefined; }}
                   onclick={(e) => e.stopPropagation()}
                   class="w-full min-w-0 text-xs bg-transparent placeholder-gray-400 dark:placeholder-gray-500 outline-none"
                 />
@@ -146,26 +171,47 @@
 
       <tbody>
         {#each pageRows as record, i}
-          {#if selectedIndex === i}
-            <RecordDetail
-              {record}
-              {columns}
-              {tableName}
-              {query}
-              onclose={() => selectedIndex = undefined}
-            />
-          {:else}
-            <tr
-              class="{selectedIndex !== i - 1 ? 'border-t border-t-gray-400/50' : ''} hover:bg-gray-400 dark:hover:bg-gray-500 cursor-pointer select-none"
-              onclick={() => selectedIndex = selectedIndex === i ? undefined : i}
-            >
-              {#each record as cell}
-                <td class="min-w-40 max-w-96 overflow-hidden truncate px-3 py-1.5">
+          {@const isSelectedRow = selectedRecord === i}
+          <tr
+            class="border-t border-t-gray-400/50  select-none"
+            onclick={() => selectedRecord = selectedRecord === i ? undefined : i}
+          >
+
+            {#each record as cell, j}
+              {@const isSelectedCell = isSelectedRow && selectedCell === j}
+
+              <td 
+                onclick={() => selectedCell = j}
+                class="
+                  min-w-40 max-w-96 overflow-hidden truncate px-3 py-1.5
+                  {isSelectedCell ? '' : 'hover:bg-gray-400/80 dark:hover:bg-gray-500/80 cursor-text'}
+                "
+              >
+                {#if isSelectedCell}
+                  <EditableCell
+                    initialContent={cell}
+                    closeEditor={() => selectedCell = undefined}
+                    {tableName}
+                    column={columns[j]}
+                    allColumns={columns}
+                    originalRow={record}
+                    bind:error={saveError}
+                  />
+                {:else}
                   {cell}
-                </td>
-              {/each}
-            </tr>
-          {/if}
+                {/if}
+              </td>
+            {/each}
+
+            
+          </tr>
+          <tr>
+            <td colspan={record.length}>
+              {#if isSelectedRow}
+                <Error error={saveError} class='mb-2 mt-1' />
+              {/if}
+            </td>
+          </tr>
         {:else}
           <tr>
             <td colspan={columns.length} class="px-3 py-4 text-center text-gray-500 dark:text-gray-400 italic">
@@ -180,7 +226,7 @@
   <ResultTablePagination
     {pageCount}
     bind:page={page}
-    bind:selectedIndex={selectedIndex}
+    bind:selectedIndex={selectedRecord}
   />
 
 {/if}

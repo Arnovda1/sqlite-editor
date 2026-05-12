@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as fs from 'fs';
 import setupDb from './setup-db';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -39,10 +40,15 @@ class YourEditorProvider implements vscode.CustomReadonlyEditorProvider {
 </body>
 </html>`;
 
-		webviewPanel.webview.onDidReceiveMessage((msg) => {
+		webviewPanel.webview.onDidReceiveMessage(async (msg) => {
 			if (msg.type === 'query') {
 				try {
 					const results = db.exec(msg.sql);
+					const isWrite = /^\s*(insert|update|delete|create|drop|alter|replace)\s/i.test(msg.sql);
+					if (isWrite) {
+						const data = db.export();
+						await fs.promises.writeFile(document.uri.fsPath, data);
+					}
 					webviewPanel.webview.postMessage({ type: 'queryResult', id: msg.id, results });
 				} catch (err: any) {
 					webviewPanel.webview.postMessage({ type: 'queryResult', id: msg.id, error: err.message });
