@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { QueryResult } from "../../types";
-  import { pascalToSentence } from "../../util";
+  import type { QueryResult } from "../../../types";
+  import { pascalToSentence } from "../../../util";
   import ResultTablePagination from "./result-table-pagination.svelte";
   import RecordDetail from "./record-detail.svelte";
 

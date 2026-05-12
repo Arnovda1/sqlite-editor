@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Tabs from './components/tabs.svelte';
-  import Query from './components/query.svelte';
+  import Tabs from './components/ui/tabs.svelte';
+  import Query from './components/tabs/query.svelte';
   import type { AppTabs, QueryResult, TableTypes } from '../types';
-  import Overview from './components/overview.svelte';
-  import Tables from './components/tables.svelte';
+  import Overview from './components/tabs/overview.svelte';
+  import Tables from './components/tabs/tables.svelte';
   import { pendingQueries, query } from '../queries';
 
   let currentTab = $state<AppTabs>('overview');
@@ -92,11 +92,11 @@
   <Tabs bind:currentTab={currentTab} />
 
   {#if currentTab === 'query'}
-    <Query {query} {schema} />
+    <Query {schema} />
   {:else if currentTab === 'overview'}
-    <Overview {query} {getTables} />
+    <Overview />
   {:else if currentTab === 'tables'}
-    <Tables {query} {getTables} />
+    <Tables />
   {/if}
 
   {#if loading}

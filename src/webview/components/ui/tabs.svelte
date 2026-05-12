@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { AppTabs } from '../../types';
-  import { capitalize } from '../../util';
+  import type { AppTabs } from '../../../types';
+  import { capitalize } from '../../../util';
 
   let {
     currentTab = $bindable(),

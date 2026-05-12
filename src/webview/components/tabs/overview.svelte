@@ -1,19 +1,14 @@
 <script lang="ts">
-  import type { QueryResult, TableTypes } from "../../types";
-  import ResultTable from "./result-table.svelte";
-  import Error from './error.svelte';
-  import TableSelector from "./table-selector.svelte";
+  import type { QueryResult } from "../../../types";
+  import ResultTable from "../ui/result-table.svelte";
+  import Error from '../ui/error.svelte';
+  import TableSelector from "../ui/table-selector.svelte";
+  import { query } from "../../../queries";
 
   let {
-    getTables,
-    query,
   }: {
-    getTables: (type?: TableTypes) => Promise<string[]>
-    query: (sql: string) => Promise<QueryResult>,
   } = $props();
 
-  let selectedType = $state<TableTypes>(`'table', 'view'`);
-  let tables = $state<string[]>([]);
   let selectedTable = $state<string | undefined>(undefined);
   let result = $state<QueryResult | undefined>(undefined);
   let error = $state<string | undefined>(undefined);
@@ -38,11 +33,15 @@
     }
   }
 
+  $effect(() => {
+    if (selectedTable) {
+      handleQueryTable(selectedTable);
+    }
+  });
+
 </script>
 
-<TableSelector
-  bind:selectedTable={selectedTable}
-/>
+<TableSelector bind:selectedTable={selectedTable} />
 
 <Error {error} />
 

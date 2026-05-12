@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { QueryResult } from "../../types";
+  import type { QueryResult } from "../../../types";
 
   let {
     record,

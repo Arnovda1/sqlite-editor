@@ -1,9 +1,9 @@
 <script lang="ts">
   import { untrack } from 'svelte';
-  import type { QueryResult } from '../../types';
-  import Button from './button.svelte';
-  import Error from './error.svelte';
-  import ResultTable from './result-table.svelte';
+  import type { QueryResult } from '../../../types';
+  import Button from '../ui/button.svelte';
+  import Error from '../ui/error.svelte';
+  import ResultTable from '../ui/result-table.svelte';
   import { EditorView, basicSetup } from 'codemirror';
   import { keymap } from '@codemirror/view';
   import { sql, SQLite } from '@codemirror/lang-sql';
@@ -11,12 +11,11 @@
   import { acceptCompletion } from '@codemirror/autocomplete';
   import { oneDark } from '@codemirror/theme-one-dark';
   import { Compartment } from '@codemirror/state';
+  import { query } from '../../../queries';
 
   let {
-    query,
     schema = {},
   }: {
-    query: (sql: string) => Promise<QueryResult>,
     schema?: Record<string, string[]>,
   } = $props();
 

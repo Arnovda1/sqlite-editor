@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { TableTypes } from "../../types";
+  import type { TableTypes } from "../../../types";
   import Button from "./button.svelte";
-  import { getTables } from "../../queries";
+  import { getTables } from "../../../queries";
 
   let {
     selectedTable = $bindable(),
