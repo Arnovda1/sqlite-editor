@@ -10,6 +10,11 @@ A VS Code extension for viewing and querying SQLite databases.
 - **Inline record detail** — click any row to expand its full field values inline beneath it
 - **Light & dark theme** — the query editor automatically follows your VS Code theme
 
+## Images
+
+![Tables Preview](media/screen_tables.png)
+![Query Preview](media/screen_query.png)
+
 ## Usage
 
 Open any `.db` file in VS Code — the extension will activate automatically as the default editor for `.db` files.
