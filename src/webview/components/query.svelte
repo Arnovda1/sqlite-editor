@@ -5,14 +5,19 @@
   import Error from './error.svelte';
   import ResultTable from './result-table.svelte';
   import { EditorView, basicSetup } from 'codemirror';
-  import { sql } from '@codemirror/lang-sql';
+  import { keymap } from '@codemirror/view';
+  import { sql, SQLite } from '@codemirror/lang-sql';
+  import { indentWithTab } from '@codemirror/commands';
+  import { acceptCompletion } from '@codemirror/autocomplete';
   import { oneDark } from '@codemirror/theme-one-dark';
   import { Compartment } from '@codemirror/state';
 
   let {
     query,
+    schema = {},
   }: {
     query: (sql: string) => Promise<QueryResult>,
+    schema?: Record<string, string[]>,
   } = $props();
 
   let statement = $state("SELECT * FROM user");
@@ -24,6 +29,7 @@
   let view: EditorView;
 
   const themeCompartment = new Compartment();
+  const sqlCompartment = new Compartment();
 
   function isDark() {
     const kind = document.body.getAttribute('data-vscode-theme-kind');
@@ -35,7 +41,12 @@
       doc: untrack(() => statement),
       extensions: [
         basicSetup,
-        sql(),
+        keymap.of([
+          { key: 'Tab', run: acceptCompletion },
+          { key: 'Mod-Enter', run: () => { handleQuery(); return true; } },
+          indentWithTab,
+        ]),
+        sqlCompartment.of(sql({ dialect: SQLite, schema, upperCaseKeywords: true })),
         themeCompartment.of(isDark() ? oneDark : []),
         EditorView.theme({
           '.cm-scroller': { minHeight: '16rem' },
@@ -60,6 +71,14 @@
       observer.disconnect();
       view.destroy();
     };
+  });
+
+  $effect(() => {
+    if (view && schema) {
+      view.dispatch({
+        effects: sqlCompartment.reconfigure(sql({ dialect: SQLite, schema, upperCaseKeywords: true })),
+      });
+    }
   });
 
   const handleQuery = async () => {

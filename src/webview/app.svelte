@@ -33,18 +33,38 @@
   });
 
   let tables: string[] = $state([]);
+  let schema = $state<Record<string, string[]>>({});
   let activeTable: string | null = $state(null);
   let tableResult: QueryResult | null = $state(null);
   let sql = $state('');
   let customResult: QueryResult | null = $state(null);
   let loading = $state(true);
 
-  // Load table list on mount
+  // Load schema on mount
   (async () => {
-    const result = await query(`SELECT name FROM sqlite_master WHERE type IN ('table', 'view') ORDER BY name`);
+    const result = await query(`
+      SELECT m.name as tableName, p.name as columnName
+      FROM sqlite_master m
+      JOIN pragma_table_info(m.name) p
+      WHERE m.type IN ('table', 'view')
+      ORDER BY m.name, p.cid
+    `);
     if (result && !('error' in result)) {
-      tables = result.rows.map((r) => r[0] as string);
+      const newSchema: Record<string, string[]> = {};
+      result.rows.forEach(([tableName, columnName]) => {
+        if (!newSchema[tableName]) newSchema[tableName] = [];
+        newSchema[tableName].push(columnName);
+      });
+      schema = newSchema;
+      tables = Object.keys(schema);
       if (tables.length > 0) selectTable(tables[0]);
+    } else {
+      // Fallback if pragma_table_info is not available as a function
+      const tablesResult = await query(`SELECT name FROM sqlite_master WHERE type IN ('table', 'view') ORDER BY name`);
+      if (tablesResult && !('error' in tablesResult)) {
+        tables = tablesResult.rows.map((r) => r[0] as string);
+        if (tables.length > 0) selectTable(tables[0]);
+      }
     }
     loading = false;
   })();
@@ -75,7 +95,7 @@
   <Tabs bind:currentTab={currentTab} />
 
   {#if currentTab === 'query'}
-    <Query {query} />
+    <Query {query} {schema} />
   {:else if currentTab === 'tables'}
     <Tables {query} {getTables} />
   {:else}
