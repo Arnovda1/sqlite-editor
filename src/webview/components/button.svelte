@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Snippet } from "svelte";
 
   let {
     class: className = '',
@@ -8,7 +7,7 @@
   }: {
     class?: string,
     onclick: () => void,
-    children: Snippet,
+    children: import("svelte").Snippet,
   } = $props();
 
 </script>

@@ -50,6 +50,5 @@
     </tr>
   </tfoot>
 </table>
-{/if}
 
 {JSON.stringify(data)}

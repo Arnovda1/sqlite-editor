@@ -7,7 +7,7 @@
   let {
     query,
   }: {
-    query: (sql: string) => Promise<{ columns: string[]; rows: any[][] } | null>,
+    query: (sql: string) => Promise<QueryResult>,
   } = $props();
 
   let statement = $state("SELECT * FROM user");

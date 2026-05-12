@@ -10,7 +10,7 @@
   let pendingQueries = new Map<number, (result: any) => void>();
   let queryId = 0;
 
-  const query = async (sql: string): Promise<QueryResult | null> => {
+  const query = async (sql: string): Promise<QueryResult> => {
     return new Promise((resolve) => {
       const id = queryId++;
       pendingQueries.set(id, resolve);
