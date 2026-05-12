@@ -50,8 +50,8 @@
     loading = false;
   })();
 
-  async function getTables(): Promise<string[]> {
-    const result = await query(`SELECT name FROM sqlite_master WHERE type IN ('table', 'view') ORDER BY name`);
+  async function getTables(type: `'table'` | `'view'` | `'table', 'view'` = `'table', 'view'`): Promise<string[]> {
+    const result = await query(`SELECT name FROM sqlite_master WHERE type IN (${type}) ORDER BY name`);
     if (!result || 'error' in result) return [];
     return result.rows.map((r) => r[0] as string);
   }
