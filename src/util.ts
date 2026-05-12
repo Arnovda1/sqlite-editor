@@ -1,3 +1,6 @@
+import { QueryResult, TableTypes } from "./types";
+import { vscode } from "./webview/vscode";
+
 export const pascalToSentence = (str: string) => {
   if (!str) return '';
   if (str === str.toUpperCase()) return str;

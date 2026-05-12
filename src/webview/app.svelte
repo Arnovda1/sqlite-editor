@@ -1,21 +1,22 @@
 <script lang="ts">
-  import { vscode } from './vscode';
   import Tabs from './components/tabs.svelte';
-  import Tables from './components/tables.svelte';
   import Query from './components/query.svelte';
   import type { AppTabs, QueryResult, TableTypes } from '../types';
+  import Overview from './components/overview.svelte';
+  import Tables from './components/tables.svelte';
+  import { pendingQueries, query } from '../queries';
 
-  let currentTab = $state<AppTabs>('tables');
-  let pendingQueries = new Map<number, (result: any) => void>();
-  let queryId = 0;
+  let currentTab = $state<AppTabs>('overview');
+  // let pendingQueries = new Map<number, (result: any) => void>();
+  // let queryId = 0;
 
-  const query = async (sql: string): Promise<QueryResult> => {
-    return new Promise((resolve) => {
-      const id = queryId++;
-      pendingQueries.set(id, resolve);
-      vscode.postMessage({ type: 'query', id, sql });
-    });
-  }
+  // const query = async (sql: string): Promise<QueryResult> => {
+  //   return new Promise((resolve) => {
+  //     const id = queryId++;
+  //     pendingQueries.set(id, resolve);
+  //     vscode.postMessage({ type: 'query', id, sql });
+  //   });
+  // }
 
   window.addEventListener('message', (event) => {
     const msg = event.data;
@@ -80,10 +81,6 @@
     tableResult = await query(`SELECT * FROM "${name}" LIMIT 200`);
   }
 
-  async function runQuery() {
-    if (!sql.trim()) return;
-    customResult = await query(sql);
-  }
 </script>
 
 <main class="p-4 font-mono text-sm">
@@ -96,10 +93,10 @@
 
   {#if currentTab === 'query'}
     <Query {query} {schema} />
+  {:else if currentTab === 'overview'}
+    <Overview {query} {getTables} />
   {:else if currentTab === 'tables'}
     <Tables {query} {getTables} />
-  {:else}
-    <p>Select a tab</p>
   {/if}
 
   {#if loading}
