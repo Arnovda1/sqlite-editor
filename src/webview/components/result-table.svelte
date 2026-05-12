@@ -10,7 +10,7 @@
     data: QueryResult,
   } = $props();
 
-  let selectedRecord = $state<any | undefined>(undefined);
+  let selectedIndex = $state<number | undefined>(undefined);
 
 </script>
 
@@ -33,10 +33,10 @@
       </thead>
 
       <tbody>
-        {#each data.rows as record}
+        {#each data.rows as record, i}
           <tr
             class="border-t border-t-gray-500/70 hover:bg-gray-400 dark:hover:bg-gray-500 cursor-pointer select-none"
-            onclick={() => selectedRecord = record}
+            onclick={() => selectedIndex = selectedIndex === i ? undefined : i}
           >
             {#each record as cell}
               <td class="min-w-32 max-w-96 overflow-hidden truncate px-3 py-1.5">
@@ -44,6 +44,27 @@
               </td>
             {/each}
           </tr>
+
+          {#if selectedIndex === i}
+            <tr class="border rounded-lg m-0.5 border-t-gray-500/70">
+              <td colspan={data.columns.length} class="px-3 py-2">
+                <div class="flex flex-col">
+                  {#each data.columns as column, j}
+                    <div class="flex gap-4 py-1.5 {j > 0 ? 'border-t border-gray-400/60 dark:border-gray-500/60' : ''}">
+                      <span class="shrink-0 w-40 text-sm font-semibold truncate pt-0.5">
+                        {pascalToSentence(column)}
+                      </span>
+                      {#if record[j] == null}
+                        <span class="italic text-gray-400">null</span>
+                      {:else}
+                        <span class="break-all">{record[j]}</span>
+                      {/if}
+                    </div>
+                  {/each}
+                </div>
+              </td>
+            </tr>
+          {/if}
         {:else}
           <tr>
             <td colspan={data.columns.length} class="px-3 py-4 text-center text-gray-500 dark:text-gray-400 italic">
@@ -55,31 +76,4 @@
     </table>
   </div>
 
-  {@render recordDetail()}
-
-  {/if}
-
-{#snippet recordDetail()}
-
-  {#if selectedRecord}
-
-    <p class="font-bold text-lg mt-4">
-      Selected record
-    </p>
-
-    <div class="mt-1.5 p-3 rounded-lg bg-gray-300 dark:bg-gray-600 overflow-hidden">
-      {#each data?.columns as column, i}
-        <div class="flex gap-4 px-3 py-1.5 {i > 0 ? 'border-t border-gray-400/60 dark:border-gray-500/60' : ''}">
-          <span class="shrink-0 w-40 text-sm font-semibold truncate pt-0.5">
-            {pascalToSentence(column)}
-          </span>
-          {#if selectedRecord[i] == null}
-            <span class="italic">null</span>
-          {:else}
-            <span class="break-all">{selectedRecord[i]}</span>
-          {/if}
-        </div>
-      {/each}
-    </div>
-  {/if}
-{/snippet}
+{/if}
