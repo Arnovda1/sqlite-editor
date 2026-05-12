@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { QueryResult } from "../../../types";
+  import { query } from "../../../queries";
   import Button from "./button.svelte";
   import EditableCell from "./editable-cell.svelte";
   import Error from "./error.svelte";
@@ -81,6 +82,26 @@
     selectedCell;
     saveError = undefined;
   });
+
+  const sqlVal = (original: any, val: string): string => {
+    if (typeof original === 'number' && !isNaN(Number(val))) return val;
+    return `'${val.replace(/'/g, "''")}'`;
+  }
+
+  const deleteRecord = async (record: any[]) => {
+    if (!tableName) return;
+    const where = columns.map((col, j) =>
+      record[j] == null
+        ? `"${col}" IS NULL`
+        : `"${col}" = ${sqlVal(record[j], String(record[j]))}`
+    ).join(' AND ');
+    const result = await query(`DELETE FROM "${tableName}" WHERE ${where}`);
+    if (result && 'error' in result) {
+      saveError = result.error;
+    } else {
+      onRefresh?.();
+    }
+  }
 </script>
 
 {#if loading}
@@ -133,6 +154,7 @@
     <table class="w-full">
       <thead>
         <tr>
+          {#if tableName}<th></th>{/if}
           {#each columns as column, i}
             <th
               scope="col"
@@ -155,6 +177,7 @@
           {/each}
         </tr>
         <tr>
+          {#if tableName}<td></td>{/if}
           {#each columns as _, i}
             <td class="px-2 py-1.5">
               <div class="flex items-center gap-1.5 rounded-md px-2 py-1 bg-gray-200 dark:bg-gray-700 focus-within:ring-1 ring-gray-400 dark:ring-gray-500">
@@ -185,10 +208,17 @@
         {#each pageRows as record, i}
           {@const isSelectedRow = selectedRecord === i}
           <tr
-            class="border-t border-t-gray-400/50  select-none"
+            class="border-t border-t-gray-400/50 select-none group"
             onclick={() => selectedRecord = selectedRecord === i ? undefined : i}
           >
 
+            {#if tableName}
+              <td class="px-1 py-1.5 w-6" onclick={(e) => e.stopPropagation()}>
+                <Button onclick={() => deleteRecord(record)} size='icon'>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </Button>
+              </td>
+            {/if}
             {#each record as cell, j}
               {@const isSelectedCell = isSelectedRow && selectedCell === j}
 
@@ -218,7 +248,7 @@
             
           </tr>
           <tr>
-            <td colspan={record.length}>
+            <td colspan={record.length + (tableName ? 1 : 0)}>
               {#if isSelectedRow}
                 <Error error={saveError} class='mb-2 mt-1' />
               {/if}
@@ -226,7 +256,7 @@
           </tr>
         {:else}
           <tr>
-            <td colspan={columns.length} class="px-3 py-4 text-center text-gray-500 dark:text-gray-400 italic">
+            <td colspan={columns.length + (tableName ? 1 : 0)} class="px-3 py-4 text-center text-gray-500 dark:text-gray-400 italic">
               No results found
             </td>
           </tr>

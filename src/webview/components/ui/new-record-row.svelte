@@ -39,6 +39,7 @@
 </script>
 
 <tr class="border-t border-t-gray-400/50 bg-gray-200/60 dark:bg-gray-700/60">
+  <td class="w-6"></td>
   {#each columns as _, j}
     <td class="min-w-40 max-w-96 px-3 py-1.5">
       <!-- svelte-ignore a11y_autofocus -->
@@ -57,7 +58,7 @@
 </tr>
 {#if error}
   <tr>
-    <td colspan={columns.length} class="px-3 pb-2">
+    <td colspan={columns.length + 1} class="px-3 pb-2">
       <span class="text-xs text-red-500">{error}</span>
     </td>
   </tr>
