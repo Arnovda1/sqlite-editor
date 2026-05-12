@@ -36,9 +36,9 @@
 
 </script>
 
-<div class="flex flex-wrap">
+<div class="grid gap-1.5 mt-1.5" style="grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr))">
   {#each tables as table}
-    <Button onclick={() => handleQueryTable(table)}>
+    <Button class="w-full mx-0 mt-0 truncate" onclick={() => handleQueryTable(table)}>
       {table}
     </Button>
   {/each}
