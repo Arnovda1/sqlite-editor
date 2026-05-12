@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { QueryResult } from "../../types";
   import { pascalToSentence } from "../../util";
+  import ResultTablePagination from "./result-table-pagination.svelte";
 
   let {
     title,
@@ -12,7 +13,7 @@
     loading?: boolean,
   } = $props();
 
-  const PAGE_SIZE = 200;
+  const PAGE_SIZE = 1000;
 
   let selectedIndex = $state<number | undefined>(undefined);
   let page = $state(0);
@@ -43,6 +44,12 @@
     <p class="font-bold text-lg">{title}</p>
     <span class="text-xs text-gray-500 dark:text-gray-400">{rows.length} rows</span>
   </div>
+
+  <ResultTablePagination
+    {pageCount}
+    bind:page={page}
+    bind:selectedIndex={selectedIndex}
+  />
 
   <div class="overflow-x-auto mt-1.5 rounded-lg p-3 bg-gray-300 dark:bg-gray-600">
     <table class="w-full">
@@ -100,20 +107,10 @@
     </table>
   </div>
 
-  {#if pageCount > 1}
-    <div class="flex items-center justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
-      <button
-        class="px-2 py-1 rounded disabled:opacity-40 enabled:hover:bg-gray-300 dark:enabled:hover:bg-gray-600"
-        disabled={page === 0}
-        onclick={() => { page--; selectedIndex = undefined; }}
-      >← Prev</button>
-      <span>Page {page + 1} of {pageCount}</span>
-      <button
-        class="px-2 py-1 rounded disabled:opacity-40 enabled:hover:bg-gray-300 dark:enabled:hover:bg-gray-600"
-        disabled={page === pageCount - 1}
-        onclick={() => { page++; selectedIndex = undefined; }}
-      >Next →</button>
-    </div>
-  {/if}
+  <ResultTablePagination
+    {pageCount}
+    bind:page={page}
+    bind:selectedIndex={selectedIndex}
+  />
 
 {/if}
