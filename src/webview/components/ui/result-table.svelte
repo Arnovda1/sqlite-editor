@@ -146,17 +146,6 @@
 
       <tbody>
         {#each pageRows as record, i}
-          <tr
-            class="{selectedIndex !== i - 1 ? 'border-t border-t-gray-500/70' : ''} hover:bg-gray-400 dark:hover:bg-gray-500 cursor-pointer select-none"
-            onclick={() => selectedIndex = selectedIndex === i ? undefined : i}
-          >
-            {#each record as cell}
-              <td class="min-w-32 max-w-96 overflow-hidden truncate px-3 py-1.5">
-                {cell}
-              </td>
-            {/each}
-          </tr>
-
           {#if selectedIndex === i}
             <RecordDetail
               {record}
@@ -165,6 +154,17 @@
               {query}
               onclose={() => selectedIndex = undefined}
             />
+          {:else}
+            <tr
+              class="{selectedIndex !== i - 1 ? 'border-t border-t-gray-500/70' : ''} hover:bg-gray-400 dark:hover:bg-gray-500 cursor-pointer select-none"
+              onclick={() => selectedIndex = selectedIndex === i ? undefined : i}
+            >
+              {#each record as cell}
+                <td class="min-w-32 max-w-96 overflow-hidden truncate px-3 py-1.5">
+                  {cell}
+                </td>
+              {/each}
+            </tr>
           {/if}
         {:else}
           <tr>

@@ -2,14 +2,14 @@
   import type { QueryResult } from "../../../types";
   import ResultTable from "../ui/result-table.svelte";
   import Error from '../ui/error.svelte';
-  import TableSelector from "../ui/table-selector.svelte";
   import { query } from "../../../queries";
 
   let {
+    selectedTable,
   }: {
+    selectedTable?: string,
   } = $props();
 
-  let selectedTable = $state<string | undefined>(undefined);
   let result = $state<QueryResult | undefined>(undefined);
   let error = $state<string | undefined>(undefined);
   let loading = $state(false);
@@ -40,8 +40,6 @@
   });
 
 </script>
-
-<TableSelector bind:selectedTable={selectedTable} />
 
 <Error {error} />
 

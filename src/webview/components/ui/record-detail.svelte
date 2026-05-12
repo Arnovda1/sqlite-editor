@@ -15,6 +15,7 @@
     onclose: () => void,
   } = $props();
 
+  // svelte-ignore state_referenced_locally
   let editValues = $state<string[]>(record.map(v => v == null ? '' : String(v)));
   let saving = $state(false);
   let saveError = $state<string | undefined>(undefined);
@@ -72,7 +73,7 @@
     </div>
 
     {#if tableName && query}
-      <div class="flex items-center gap-2 mt-2 pt-2 border-t border-gray-400/60 dark:border-gray-500/60">
+      <div class="flex items-center gap-2 pt-2 border-t border-gray-400/60 dark:border-gray-500/60">
         <button
           disabled={saving}
           onclick={saveRecord}
