@@ -3,8 +3,10 @@
   import { pascalToSentence } from "../../util";
 
   let {
+    title,
     data,
   }: {
+    title: string,
     data: QueryResult,
   } = $props();
 
@@ -15,7 +17,7 @@
 {#if data?.columns && data.rows}
 
   <p class="font-bold text-lg mt-4">
-    Query result
+    {title}
   </p>
 
   <div class="overflow-x-auto mt-1.5 rounded-lg p-3 bg-gray-300 dark:bg-gray-600">

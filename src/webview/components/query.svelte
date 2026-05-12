@@ -82,5 +82,5 @@
 </Button>
 
 {#if result}
-  <ResultTable data={result} />
+  <ResultTable data={result} title='Query result' />
 {/if}
