@@ -118,15 +118,18 @@
         </tr>
         <tr>
           {#each columns as _, i}
-            <td class="px-2 py-1">
-              <input
-                type="text"
-                placeholder="Filter..."
-                bind:value={filters[i]}
-                oninput={() => { page = 0; selectedIndex = undefined; }}
-                onclick={(e) => e.stopPropagation()}
-                class="w-full min-w-0 rounded px-2 py-0.5 text-xs bg-gray-200 dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:ring-1 ring-gray-400 dark:ring-gray-500"
-              />
+            <td class="px-2 py-1.5">
+              <div class="flex items-center gap-1.5 rounded-md px-2 py-1 bg-gray-200 dark:bg-gray-700 focus-within:ring-1 ring-gray-400 dark:ring-gray-500">
+                <svg class="shrink-0 opacity-40" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input
+                  type="text"
+                  placeholder="Filter..."
+                  bind:value={filters[i]}
+                  oninput={() => { page = 0; selectedIndex = undefined; }}
+                  onclick={(e) => e.stopPropagation()}
+                  class="w-full min-w-0 text-xs bg-transparent placeholder-gray-400 dark:placeholder-gray-500 outline-none"
+                />
+              </div>
             </td>
           {/each}
         </tr>
