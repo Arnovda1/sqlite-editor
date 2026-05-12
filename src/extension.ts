@@ -43,12 +43,17 @@ class YourEditorProvider implements vscode.CustomReadonlyEditorProvider {
 		webviewPanel.webview.onDidReceiveMessage(async (msg) => {
 			if (msg.type === 'query') {
 				try {
-					const results = db.exec(msg.sql);
 					const isWrite = /^\s*(insert|update|delete|create|drop|alter|replace)\s/i.test(msg.sql);
+					const stmt = db.prepare(msg.sql);
+					const columns = stmt.getColumnNames();
+					const rows: any[][] = [];
+					while (stmt.step()) rows.push(stmt.get());
+					stmt.free();
 					if (isWrite) {
 						const data = db.export();
 						await fs.promises.writeFile(document.uri.fsPath, data);
 					}
+					const results = columns.length ? [{ columns, values: rows }] : [];
 					webviewPanel.webview.postMessage({ type: 'queryResult', id: msg.id, results });
 				} catch (err: any) {
 					webviewPanel.webview.postMessage({ type: 'queryResult', id: msg.id, error: err.message });
