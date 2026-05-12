@@ -69,7 +69,7 @@
 <main class="p-4 font-mono text-sm">
   
   <h1 class="text-base font-bold mb-4">
-    SQLite Editor
+    SQLite Workbench
   </h1>
 
   <Tabs bind:currentTab={currentTab} />

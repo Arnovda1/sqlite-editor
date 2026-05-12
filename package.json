@@ -20,8 +20,8 @@
   "contributes": {
     "customEditors": [
       {
-        "viewType": "sqlite-editor.dbEditor",
-        "displayName": "SQLite editor",
+        "viewType": "sqlite-workbench.dbEditor",
+        "displayName": "SQLite Workbench",
         "selector": [
           { "filenamePattern": "*.db" },
           { "filenamePattern": "*.sqlite" },

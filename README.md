@@ -1,4 +1,4 @@
-# SQLite Editor
+# SQLite Workbench
 
 A VS Code extension for viewing and querying SQLite databases.
 
