@@ -7,6 +7,7 @@
   import { EditorView, basicSetup } from 'codemirror';
   import { sql } from '@codemirror/lang-sql';
   import { oneDark } from '@codemirror/theme-one-dark';
+  import { Compartment } from '@codemirror/state';
 
   let {
     query,
@@ -19,15 +20,21 @@
   let error = $state<string | undefined>(undefined);
 
   let editorEl: HTMLDivElement;
-  let view: EditorView;
+
+  const themeCompartment = new Compartment();
+
+  function isDark() {
+    const kind = document.body.getAttribute('data-vscode-theme-kind');
+    return kind !== 'vscode-light';
+  }
 
   $effect(() => {
-    view = new EditorView({
+    const view = new EditorView({
       doc: untrack(() => statement),
       extensions: [
         basicSetup,
         sql(),
-        oneDark,
+        themeCompartment.of(isDark() ? oneDark : []),
         EditorView.theme({
           '.cm-scroller': { minHeight: '16rem' },
         }),
@@ -40,7 +47,17 @@
       parent: editorEl,
     });
 
-    return () => view.destroy();
+    const observer = new MutationObserver(() => {
+      view.dispatch({
+        effects: themeCompartment.reconfigure(isDark() ? oneDark : []),
+      });
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['data-vscode-theme-kind'] });
+
+    return () => {
+      observer.disconnect();
+      view.destroy();
+    };
   });
 
   const handleQuery = async () => {
