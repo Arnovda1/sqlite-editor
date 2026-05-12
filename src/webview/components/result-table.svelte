@@ -15,7 +15,7 @@
 {#if data?.columns && data.rows}
 
   <p class="font-bold text-lg mt-4">
-    Query result:
+    Query result
   </p>
 
   <div class="overflow-x-auto mt-1.5 rounded-lg p-3 bg-gray-300 dark:bg-gray-600">
@@ -56,7 +56,7 @@
   {#if selectedRecord}
 
     <p class="font-bold text-lg mt-4">
-      Selected record:
+      Selected record
     </p>
 
     <div class="mt-1.5 p-3 rounded-lg bg-gray-300 dark:bg-gray-600 overflow-hidden">
