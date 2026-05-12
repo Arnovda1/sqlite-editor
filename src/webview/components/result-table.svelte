@@ -12,23 +12,37 @@
     loading?: boolean,
   } = $props();
 
-  let selectedIndex = $state<number | undefined>(undefined);
+  const PAGE_SIZE = 200;
 
+  let selectedIndex = $state<number | undefined>(undefined);
+  let page = $state(0);
+
+  let rows = $derived(data && !('error' in data) ? data.rows : []);
+  let pageCount = $derived(Math.ceil(rows.length / PAGE_SIZE));
+  let pageRows = $derived(rows.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE));
+
+  $effect(() => {
+    // reset when data changes
+    rows;
+    page = 0;
+    selectedIndex = undefined;
+  });
 </script>
 
 {#if loading}
   <p class="font-bold text-lg mt-4">{title}</p>
   <div class="mt-1.5 rounded-lg p-6 bg-gray-300 dark:bg-gray-600 flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400">
     <div class="animate-spin">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle-icon lucide-loader-circle"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
     </div>
     Loading
   </div>
 {:else if data?.columns && data.rows}
 
-  <p class="font-bold text-lg mt-4">
-    {title}
-  </p>
+  <div class="flex items-baseline justify-between mt-4">
+    <p class="font-bold text-lg">{title}</p>
+    <span class="text-xs text-gray-500 dark:text-gray-400">{rows.length} rows</span>
+  </div>
 
   <div class="overflow-x-auto mt-1.5 rounded-lg p-3 bg-gray-300 dark:bg-gray-600">
     <table class="w-full">
@@ -43,7 +57,7 @@
       </thead>
 
       <tbody>
-        {#each data.rows as record, i}
+        {#each pageRows as record, i}
           <tr
             class="{selectedIndex !== i - 1 ? 'border-t border-t-gray-500/70' : ''} hover:bg-gray-400 dark:hover:bg-gray-500 cursor-pointer select-none"
             onclick={() => selectedIndex = selectedIndex === i ? undefined : i}
@@ -85,5 +99,21 @@
       </tbody>
     </table>
   </div>
+
+  {#if pageCount > 1}
+    <div class="flex items-center justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
+      <button
+        class="px-2 py-1 rounded disabled:opacity-40 enabled:hover:bg-gray-300 dark:enabled:hover:bg-gray-600"
+        disabled={page === 0}
+        onclick={() => { page--; selectedIndex = undefined; }}
+      >← Prev</button>
+      <span>Page {page + 1} of {pageCount}</span>
+      <button
+        class="px-2 py-1 rounded disabled:opacity-40 enabled:hover:bg-gray-300 dark:enabled:hover:bg-gray-600"
+        disabled={page === pageCount - 1}
+        onclick={() => { page++; selectedIndex = undefined; }}
+      >Next →</button>
+    </div>
+  {/if}
 
 {/if}
