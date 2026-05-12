@@ -3,7 +3,6 @@
   import Tabs from './components/tabs.svelte';
   import Tables from './components/tables.svelte';
   import Query from './components/query.svelte';
-  import Overview from './components/overview.svelte';
   import type { AppTabs, QueryResult, TableTypes } from '../types';
 
   let currentTab = $state<AppTabs>('tables');
@@ -75,9 +74,7 @@
 
   <Tabs bind:currentTab={currentTab} />
 
-  {#if currentTab === 'overview'}
-    <Overview />
-  {:else if currentTab === 'query'}
+  {#if currentTab === 'query'}
     <Query {query} />
   {:else if currentTab === 'tables'}
     <Tables {query} {getTables} />
