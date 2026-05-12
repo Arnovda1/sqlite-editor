@@ -35,7 +35,7 @@
       <tbody>
         {#each data.rows as record, i}
           <tr
-            class="border-t border-t-gray-500/70 hover:bg-gray-400 dark:hover:bg-gray-500 cursor-pointer select-none"
+            class="{selectedIndex !== i - 1 ? 'border-t border-t-gray-500/70' : ''} hover:bg-gray-400 dark:hover:bg-gray-500 cursor-pointer select-none"
             onclick={() => selectedIndex = selectedIndex === i ? undefined : i}
           >
             {#each record as cell}
@@ -47,12 +47,12 @@
 
           {#if selectedIndex === i}
             <tr>
-              <td colspan={data.columns.length} class="px-3 py-2 ring-1 ring-gray-400/60 dark:ring-gray-500/60 rounded-lg">
+              <td colspan={data.columns.length} class="px-3 py-1.5 ring-2 ring-gray-400/60 dark:ring-gray-500/60 rounded-lg bg-gray-200 dark:bg-gray-700">
                 <div class="flex flex-col">
                   {#each data.columns as column, j}
                     <div class="flex gap-4 py-1.5 {j > 0 ? 'border-t border-gray-400/60 dark:border-gray-500/60' : ''}">
                       <span class="shrink-0 w-40 text-sm font-semibold truncate pt-0.5">
-                        {pascalToSentence(column)}
+                        {column}
                       </span>
                       {#if record[j] == null}
                         <span class="italic text-gray-400">null</span>
