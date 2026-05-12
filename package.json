@@ -3,7 +3,7 @@
   "displayName": "SQLite Workbench",
   "description": "View and edit sqlite files effortlessly",
   "publisher": "arnovda1",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "icon": "media/logo.png",
   "repository": {
     "type": "git",
