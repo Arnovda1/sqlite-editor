@@ -49,10 +49,10 @@
 </script>
 
 <tr>
-  <td colspan={columns.length} class="px-3 py-2 ring-2 ring-gray-400/60 dark:ring-gray-500/60 rounded-lg bg-gray-200 dark:bg-gray-700">
+  <td colspan={columns.length} class="px-3 py-2 ring-2 ring-gray-400/60 dark:ring-gray-400/50 rounded-lg bg-gray-200 dark:bg-gray-700">
     <div class="flex flex-col">
       {#each columns as column, j}
-        <div class="flex gap-4 py-1.5 {j > 0 ? 'border-t border-gray-400/60 dark:border-gray-500/60' : ''}">
+        <div class="flex gap-4 py-1.5 {j > 0 ? 'border-t border-gray-400/60 dark:border-gray-400/50' : ''}">
           <span class="shrink-0 w-40 text-sm font-semibold truncate pt-1">
             {column}
           </span>
@@ -73,7 +73,7 @@
     </div>
 
     {#if tableName && query}
-      <div class="flex items-center gap-2 pt-2 border-t border-gray-400/60 dark:border-gray-500/60">
+      <div class="flex items-center gap-2 pt-2 border-t border-gray-400/60 dark:border-gray-400/50">
         <button
           disabled={saving}
           onclick={saveRecord}

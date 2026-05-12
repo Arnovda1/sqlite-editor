@@ -79,7 +79,7 @@
   <!-- reserved space for pagination -->
   <div class="h-8"></div>
 
-  <div class="mt-1.5 rounded-lg p-6 bg-gray-300 dark:bg-gray-600 flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400">
+  <div class="mt-1.5 rounded-lg p-6 bg-gray-100 dark:bg-gray-600 flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400">
     <div class="animate-spin">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
     </div>
@@ -100,7 +100,7 @@
     bind:selectedIndex={selectedIndex}
   />
 
-  <div class="overflow-x-auto mt-1.5 rounded-lg p-3 bg-gray-300 dark:bg-gray-600">
+  <div class="overflow-x-auto mt-1.5 rounded-lg p-3 bg-gray-100 dark:bg-gray-600">
     <table class="w-full">
       <thead>
         <tr>
@@ -132,7 +132,7 @@
                 <svg class="shrink-0 opacity-40" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 <input
                   type="text"
-                  placeholder="Filter..."
+                  placeholder="Filter"
                   bind:value={filters[i]}
                   oninput={() => { page = 0; selectedIndex = undefined; }}
                   onclick={(e) => e.stopPropagation()}
@@ -156,7 +156,7 @@
             />
           {:else}
             <tr
-              class="{selectedIndex !== i - 1 ? 'border-t border-t-gray-500/70' : ''} hover:bg-gray-400 dark:hover:bg-gray-500 cursor-pointer select-none"
+              class="{selectedIndex !== i - 1 ? 'border-t border-t-gray-400/50' : ''} hover:bg-gray-400 dark:hover:bg-gray-500 cursor-pointer select-none"
               onclick={() => selectedIndex = selectedIndex === i ? undefined : i}
             >
               {#each record as cell}

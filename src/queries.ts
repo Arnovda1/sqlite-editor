@@ -45,21 +45,12 @@ export interface TableMetadata {
   foreignKeys: ForeignKeyMetadata[];
 }
 
-/**
- * Retrieves detailed metadata for a specific table, including columns, 
- * primary keys, and foreign key relationships.
- * 
- * NOTE: This function is intended to be called from the extension side where 
- * the 'sql.js' Database object is available.
- */
-export function getTableMetadata(db: Database, tableName: string): TableMetadata {
-  // 1. Get column information and primary keys
-  const columnsResult = db.exec(`PRAGMA table_info("${tableName}")`);
+export async function getTableMetadata(tableName: string): Promise<TableMetadata> {
+  const columnsResult = await query(`PRAGMA table_info("${tableName}")`);
   const columns: ColumnMetadata[] = [];
   
-  if (columnsResult.length > 0) {
-    const { values } = columnsResult[0];
-    for (const row of values) {
+  if (columnsResult && !('error' in columnsResult)) {
+    for (const row of columnsResult.rows) {
       columns.push({
         name: row[1] as string,
         type: row[2] as string,
@@ -70,13 +61,11 @@ export function getTableMetadata(db: Database, tableName: string): TableMetadata
     }
   }
 
-  // 2. Get foreign key relationships
-  const fkResult = db.exec(`PRAGMA foreign_key_list("${tableName}")`);
+  const fkResult = await query(`PRAGMA foreign_key_list("${tableName}")`);
   const foreignKeys: ForeignKeyMetadata[] = [];
 
-  if (fkResult.length > 0) {
-    const { values } = fkResult[0];
-    for (const row of values) {
+  if (fkResult && !('error' in fkResult)) {
+    for (const row of fkResult.rows) {
       foreignKeys.push({
         column: row[3] as string,
         referencedTable: row[2] as string,
