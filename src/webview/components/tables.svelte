@@ -1,15 +1,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { QueryResult } from "../../types";
+  import type { QueryResult, TableTypes } from "../../types";
   import ResultTable from "./result-table.svelte";
   import Error from './error.svelte';
-    import Button from "./button.svelte";
+  import Button from "./button.svelte";
 
   let {
     getTables,
     query,
   }: {
-    getTables: () => Promise<string[]>
+    getTables: (type?: TableTypes) => Promise<string[]>
     query: (sql: string) => Promise<QueryResult>,
   } = $props();
 

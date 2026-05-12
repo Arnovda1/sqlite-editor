@@ -4,7 +4,7 @@
   import Tables from './components/tables.svelte';
   import Query from './components/query.svelte';
   import Overview from './components/overview.svelte';
-  import type { AppTabs, QueryResult } from '../types';
+  import type { AppTabs, QueryResult, TableTypes } from '../types';
 
   let currentTab = $state<AppTabs>('tables');
   let pendingQueries = new Map<number, (result: any) => void>();
@@ -50,7 +50,7 @@
     loading = false;
   })();
 
-  async function getTables(type: `'table'` | `'view'` | `'table', 'view'` = `'table', 'view'`): Promise<string[]> {
+  async function getTables(type: TableTypes = `'table', 'view'`): Promise<string[]> {
     const result = await query(`SELECT name FROM sqlite_master WHERE type IN (${type}) ORDER BY name`);
     if (!result || 'error' in result) return [];
     return result.rows.map((r) => r[0] as string);
