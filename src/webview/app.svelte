@@ -4,10 +4,19 @@
   import type { AppTabs } from '../types';
   import Overview from './components/tabs/overview.svelte';
   import Tables from './components/tabs/tables.svelte';
-  import { pendingQueries, query } from '../queries';
+  import { pendingQueries } from '../queries';
   import TableSelector from './components/ui/table-selector.svelte';
+  import { vscode } from './vscode';
 
-  let currentTab = $state<AppTabs>('overview');
+  const saved = vscode.getState() ?? {};
+
+  let currentTab = $state<AppTabs>(saved.tab ?? 'overview');
+  let selectedTable = $state<string | undefined>(saved.table ?? undefined);
+  let savedSql = $state<string>(saved.sql ?? '');
+
+  $effect(() => {
+    vscode.setState({ tab: currentTab, table: selectedTable, sql: savedSql });
+  });
 
   window.addEventListener('message', (event) => {
     const msg = event.data;
@@ -23,25 +32,22 @@
       }
     }
   });
-
-  let schema = $state<Record<string, string[]>>({});
-  let selectedTable = $state<string | undefined>(undefined);
 </script>
 
 <main class="p-4 font-mono text-sm">
-  
+
   <h1 class="text-base font-bold mb-4">
     SQLite Workbench
   </h1>
 
   <Tabs bind:currentTab={currentTab} />
-  
+
   {#if currentTab !== 'query'}
     <TableSelector bind:selectedTable={selectedTable} />
   {/if}
 
   {#if currentTab === 'query'}
-    <Query />
+    <Query initialSql={savedSql} onSqlChange={(sql) => savedSql = sql} />
   {:else if currentTab === 'overview'}
     <Overview {selectedTable} />
   {:else if currentTab === 'tables'}

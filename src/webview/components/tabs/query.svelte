@@ -13,8 +13,16 @@
   import { Compartment } from '@codemirror/state';
   import { query } from '../../../queries';
 
+  let {
+    initialSql = 'SELECT * FROM user',
+    onSqlChange,
+  }: {
+    initialSql?: string,
+    onSqlChange?: (sql: string) => void,
+  } = $props();
+
   let schema = $state<Record<string, string[]> | undefined>(undefined);
-  let statement = $state("SELECT * FROM user");
+  let statement = $state(initialSql);
   let result = $state<QueryResult | undefined>(undefined);
   let error = $state<string | undefined>(undefined);
   let loading = $state(false);
@@ -71,6 +79,7 @@
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             statement = update.state.doc.toString();
+            onSqlChange?.(statement);
           }
         }),
       ],
@@ -122,7 +131,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div bind:this={editorEl} class="mb-1.5 rounded-lg overflow-hidden text-sm cursor-text border border-gray-300/40 max-h-96 overflow-y-auto" onclick={() => view?.focus()}></div>
 
-<Error {error} />
+<Error {error} class='mb-1.5' />
 
 <Button onclick={handleQuery}>
   QUERY
