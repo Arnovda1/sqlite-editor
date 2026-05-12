@@ -37,5 +37,5 @@
 </Button>
 
 {#if result}
-  <ResultTable data={result} class='mt-4' />
+  <ResultTable data={result} />
 {/if}
