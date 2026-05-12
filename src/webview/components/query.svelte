@@ -14,7 +14,7 @@
     try {
       const result = await query(statement);
       if (!result) throw new TypeError('Failed to query db');
-      
+
     } catch (err: any) {
       error = typeof err === 'string' ? err : err.message;
     }
