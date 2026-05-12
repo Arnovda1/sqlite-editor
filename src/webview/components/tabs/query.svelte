@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { untrack } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import type { QueryResult } from '../../../types';
   import Button from '../ui/button.svelte';
   import Error from '../ui/error.svelte';
@@ -13,12 +13,7 @@
   import { Compartment } from '@codemirror/state';
   import { query } from '../../../queries';
 
-  let {
-    schema = {},
-  }: {
-    schema?: Record<string, string[]>,
-  } = $props();
-
+  let schema = $state<Record<string, string[]> | undefined>(undefined);
   let statement = $state("SELECT * FROM user");
   let result = $state<QueryResult | undefined>(undefined);
   let error = $state<string | undefined>(undefined);
@@ -35,6 +30,29 @@
     return kind !== 'vscode-light';
   }
 
+  // load schema
+
+
+  // Load schema on mount
+  onMount(async () => {
+    const result = await query(`
+      SELECT m.name as tableName, p.name as columnName
+      FROM sqlite_master m
+      JOIN pragma_table_info(m.name) p
+      WHERE m.type IN ('table', 'view')
+      ORDER BY m.name, p.cid
+    `);
+    if (result && !('error' in result)) {
+      const newSchema: Record<string, string[]> = {};
+      result.rows.forEach(([tableName, columnName]) => {
+        if (!newSchema[tableName]) newSchema[tableName] = [];
+        newSchema[tableName].push(columnName);
+      });
+      schema = newSchema;
+    }
+  })
+
+  // load editor
   $effect(() => {
     view = new EditorView({
       doc: untrack(() => statement),
@@ -102,7 +120,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div bind:this={editorEl} class="mb-1.5 rounded-lg overflow-hidden text-sm cursor-text" onclick={() => view?.focus()}></div>
+<div bind:this={editorEl} class="mb-1.5 rounded-lg overflow-hidden text-sm cursor-text border border-gray-300/40 max-h-96 overflow-y-auto" onclick={() => view?.focus()}></div>
 
 <Error {error} />
 

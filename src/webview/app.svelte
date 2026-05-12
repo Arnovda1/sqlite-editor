@@ -4,7 +4,7 @@
   import type { AppTabs } from '../types';
   import Overview from './components/tabs/overview.svelte';
   import Tables from './components/tabs/tables.svelte';
-  import { pendingQueries } from '../queries';
+  import { pendingQueries, query } from '../queries';
   import TableSelector from './components/ui/table-selector.svelte';
 
   let currentTab = $state<AppTabs>('overview');
@@ -26,7 +26,6 @@
 
   let schema = $state<Record<string, string[]>>({});
   let selectedTable = $state<string | undefined>(undefined);
-
 </script>
 
 <main class="p-4 font-mono text-sm">
@@ -42,7 +41,7 @@
   {/if}
 
   {#if currentTab === 'query'}
-    <Query {schema} />
+    <Query />
   {:else if currentTab === 'overview'}
     <Overview {selectedTable} />
   {:else if currentTab === 'tables'}
