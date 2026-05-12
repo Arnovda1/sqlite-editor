@@ -19,7 +19,7 @@
       class="
         {tab === currentTab
           ? 'text-dark dark:text-white bg-gray-100 dark:bg-gray-900 dark:border-0.5 border-gray-700 font-bold shadow-xl'
-          : 'text-dark/80 dark:text-white/80 font-medium'
+          : 'text-dark/80 dark:text-white/80 font-medium cursor-pointer'
         }
         text-center px-0.5 py-0.75 rounded-lg select-none
       "
