@@ -1,5 +1,6 @@
 export const pascalToSentence = (str: string) => {
   if (!str) return '';
+  if (str === str.toUpperCase()) return str;
   
   let result = str
     .replace(/_/g, ' ')

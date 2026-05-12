@@ -18,6 +18,7 @@
   let statement = $state("SELECT * FROM user");
   let result = $state<QueryResult | undefined>(undefined);
   let error = $state<string | undefined>(undefined);
+  let loading = $state(false);
 
   let editorEl: HTMLDivElement;
   let view: EditorView;
@@ -63,10 +64,13 @@
 
   const handleQuery = async () => {
     error = undefined;
+    loading = true;
     try {
       result = await query(statement);
     } catch (err: any) {
       error = typeof err === 'string' ? err : err.message;
+    } finally {
+      loading = false;
     }
   }
 </script>
@@ -81,6 +85,6 @@
   QUERY
 </Button>
 
-{#if result}
-  <ResultTable data={result} title='Query result' />
+{#if result || loading}
+  <ResultTable data={result} title='Query result' {loading} />
 {/if}

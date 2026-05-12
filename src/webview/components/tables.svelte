@@ -24,6 +24,7 @@
   let selectedTable = $state<string | undefined>(undefined);
   let result = $state<QueryResult | undefined>(undefined);
   let error = $state<string | undefined>(undefined);
+  let loading = $state(false);
 
   async function loadTables(type: TableTypes) {
     selectedType = type;
@@ -34,11 +35,14 @@
 
   const handleQueryTable = async (table: string) => {
     error = undefined;
+    loading = true;
     selectedTable = table;
     try {
       result = await query(`SELECT * FROM ${table}`);
     } catch (err: any) {
       error = typeof err === 'string' ? err : err.message;
+    } finally {
+      loading = false;
     }
   }
 
@@ -63,6 +67,6 @@
 
 <Error {error} />
 
-{#if result}
-  <ResultTable data={result} title='Table {selectedTable}' />
+{#if result || loading}
+  <ResultTable data={result} title='Table {selectedTable}' {loading} />
 {/if}
