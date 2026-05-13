@@ -8,7 +8,7 @@ A VS Code extension for viewing and querying SQLite databases.
 - **Sort and filter:** sort and filter each columns
 - **Query editor:** write and run SQL queries with syntax highlighting and autocomplete
 - **Paginated results:** large result sets are paginated for fast rendering
-- **Inline record detail:** click any row to expand its full field values inline beneath it
+- **Inline record editing:** click any cell to edit the contents of it
 - **Light & dark theme:** the query editor automatically follows your VS Code theme
 
 ## Images

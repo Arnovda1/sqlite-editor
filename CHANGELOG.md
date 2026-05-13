@@ -4,6 +4,10 @@ All notable changes to the "sqlite-workbench" extension will be documented in th
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.0.4
+
+- SEO tweaks
+
 ### 0.0.3
 
 - Create new record

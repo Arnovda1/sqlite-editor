@@ -1,9 +1,9 @@
 {
   "name": "sqlite-workbench",
   "displayName": "SQLite Workbench",
-  "description": "View and edit sqlite files effortlessly",
+  "description": "Lightweight SQLite database manager to view, query, and edit .sqlite and .db files directly in VS Code.",
   "publisher": "arnovda1",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "icon": "media/logo.png",
   "repository": {
     "type": "git",
@@ -13,7 +13,20 @@
     "vscode": "^1.118.0"
   },
   "categories": [
-    "Other"
+    "Data Science",
+    "Visualization",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "sqlite",
+    "sql",
+    "database",
+    "db",
+    "viewer",
+    "editor",
+    "workbench",
+    "explorer",
+    "sqlite3"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
