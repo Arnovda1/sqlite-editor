@@ -7,16 +7,16 @@ import { vscode } from "./webview/vscode";
 export let pendingQueries = new Map<number, (result: any) => void>();
 export let queryId = 0;
 
-export const query = async (sql: string): Promise<QueryResult> => {
+export const query = async (sql: string, reload = false): Promise<QueryResult> => {
   return new Promise((resolve) => {
     const id = queryId++;
     pendingQueries.set(id, resolve);
-    vscode.postMessage({ type: 'query', id, sql });
+    vscode.postMessage({ type: 'query', id, sql, reload });
   });
 };
 
-export const getTables = async (type: TableTypes = `'table', 'view'`): Promise<string[]> => {
-  const result = await query(`SELECT name FROM sqlite_master WHERE type IN (${type}) ORDER BY name`);
+export const getTables = async (type: TableTypes = `'table', 'view'`, reload = false): Promise<string[]> => {
+  const result = await query(`SELECT name FROM sqlite_master WHERE type IN (${type}) ORDER BY name`, reload);
   if (!result || 'error' in result) return [];
   return result.rows.map((r) => r[0] as string);
 };
@@ -45,8 +45,8 @@ export interface TableMetadata {
   foreignKeys: ForeignKeyMetadata[];
 }
 
-export async function getTableMetadata(tableName: string): Promise<TableMetadata> {
-  const columnsResult = await query(`PRAGMA table_info("${tableName}")`);
+export async function getTableMetadata(tableName: string, reload = false): Promise<TableMetadata> {
+  const columnsResult = await query(`PRAGMA table_info("${tableName}")`, reload);
   const columns: ColumnMetadata[] = [];
   
   if (columnsResult && !('error' in columnsResult)) {

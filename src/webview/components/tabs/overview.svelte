@@ -38,7 +38,7 @@
     error = undefined;
     loading = true;
     try {
-      const res = await query(`SELECT * FROM "${table}"`);
+      const res = await query(`SELECT * FROM "${table}"`, true);
       if (res && 'error' in res) {
         error = res.error;
       } else {

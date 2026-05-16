@@ -13,10 +13,15 @@
   let selectedType = $state<TableTypes>(`'table', 'view'`);
   let tables = $state<string[]>([]);
 
-  const loadTables = async (type: TableTypes) => {
+  const loadTables = async (type: TableTypes, reload = false) => {
+    if (!reload && selectedType !== type) {
+      selectedTable = undefined;
+    }
     selectedType = type;
-    tables = await getTables(type);
-    selectedTable = undefined;
+    tables = await getTables(type, reload);
+    if (selectedTable && !tables.includes(selectedTable)) {
+      selectedTable = undefined;
+    }
   }
 
   const typeOptions: { label: string; value: TableTypes }[] = [
@@ -28,7 +33,7 @@
   onMount(() => loadTables(selectedType));
 </script>
 
-<div class="flex w-fit gap-1.5 mt-2">
+<div class="flex w-fit gap-1.5">
   {#each typeOptions as option}
     <Button class="mx-0 mt-0" isActive={selectedType === option.value} onclick={() => loadTables(option.value)}>
       {option.label}

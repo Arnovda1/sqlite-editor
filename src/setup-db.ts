@@ -1,12 +1,15 @@
-import initSqlJs, { type Database } from 'sql.js';
+import initSqlJs, { type Database, type SqlJsStatic } from 'sql.js';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+
+let SQL: SqlJsStatic | undefined;
 
 const setupDb = async (document: vscode.CustomDocument): Promise<Database> => {
   try {
     const fileUri = document.uri.fsPath;
     const fileBytes = await fs.promises.readFile(fileUri);
-    const SQL = await initSqlJs();
+    if (!SQL) SQL = await initSqlJs();
+
     const db = new SQL.Database(fileBytes);
     
     return db;

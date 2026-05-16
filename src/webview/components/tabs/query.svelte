@@ -131,6 +131,25 @@
       loading = false;
     }
   }
+
+  const refreshQuery = async () => {
+    if (!statement.trim()) return;
+    error = undefined;
+    loading = true;
+    try {
+      const res = await query(statement, true);
+      if (res && 'error' in res) {
+        error = res.error;
+      } else {
+        result = res;
+        onResultChange?.(res);
+      }
+    } catch (err: any) {
+      error = typeof err === 'string' ? err : err.message;
+    } finally {
+      loading = false;
+    }
+  }
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -144,5 +163,5 @@
 </Button>
 
 {#if result || loading}
-  <ResultTable data={result} title='Query result' {loading} />
+  <ResultTable data={result} title='Query result' {loading} onRefresh={refreshQuery} />
 {/if}

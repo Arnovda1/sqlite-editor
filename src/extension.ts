@@ -19,7 +19,7 @@ class YourEditorProvider implements vscode.CustomReadonlyEditorProvider {
 	async resolveCustomEditor(document: vscode.CustomDocument, webviewPanel: vscode.WebviewPanel) {
 		webviewPanel.webview.options = { enableScripts: true };
 
-		const db = await setupDb(document);
+		let db = await setupDb(document);
 
 		const scriptUri = webviewPanel.webview.asWebviewUri(
 			vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'webview.js')
@@ -43,6 +43,9 @@ class YourEditorProvider implements vscode.CustomReadonlyEditorProvider {
 		webviewPanel.webview.onDidReceiveMessage(async (msg) => {
 			if (msg.type === 'query') {
 				try {
+					if (msg.reload) {
+						db = await setupDb(document);
+					}
 					const isWrite = /^\s*(insert|update|delete|create|drop|alter|replace)\s/i.test(msg.sql);
 					const stmt = db.prepare(msg.sql);
 					const columns = stmt.getColumnNames();
